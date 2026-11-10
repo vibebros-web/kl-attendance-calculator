@@ -1,156 +1,183 @@
-# KL Calculator — KLU Attendance & Bunk Planner
+# KL Attendance Calculator: KLU LTPS Attendance, Bunk Planner & KL Timetable
 
-Free attendance calculator for KL University (KLEF) students.
-Calculates weighted LTPS attendance, checks 85% exam eligibility,
-plans safe bunks, and syncs directly from KL University NewERP.
+**A free, unofficial attendance calculator and timetable planner for KL University (KLU / KLEF) students.**
 
-Live tool: https://kluattendancecalc.vercel.app
+It calculates weighted LTPS attendance, shows how many classes you can skip, estimates how many classes you need to recover, and plans your week with a built-in timetable.
 
----
+**Live app: https://kluattendancecalc.vercel.app**
 
-## What It Does
+*Last updated: November 2026*
 
-KL University calculates attendance using a weighted formula across
-four component types. The Student ERP shows raw unweighted figures.
-The fully weighted percentage is only visible in the Parent ERP.
-This tool replicates the exact weighted formula so students can
-check their real percentage and plan ahead without needing parent
-credentials.
+> Unofficial student tool and planning aid. Your parent ERP is always the official figure. See the [disclaimer](#disclaimer).
 
 ---
 
-## The LTPS Formula
+## Pages
 
-KL University weights each class component differently:
-
-| Component     | Code | Weight |
-|---------------|------|--------|
-| Lecture       | L    | 100    |
-| Tutorial      | T    | 100    |
-| Practical/Lab | P    | 50     |
-| Skill         | S    | 25     |
-
-Conducted weight:
-
-    conductedWeight = (L_conducted x 100) + (T_conducted x 100)
-                    + (P_conducted x 50)  + (S_conducted x 25)
-
-Attended weight:
-
-    attendedWeight = (L_attended x 100) + (T_attended x 100)
-                   + (P_attended x 50)  + (S_attended x 25)
-
-Final percentage:
-
-    percentage = ceil((attendedWeight / conductedWeight) x 100)
-
-If conductedWeight equals zero, the subject is marked N/A.
-No division is attempted.
-
----
-
-## Verified Test Cases
-
-These outputs are verified against the live calculation engine.
-
-Tutorial-only course (T: 20 conducted, 16 attended)
-- conductedWeight = 2000, attendedWeight = 1600
-- percentage = ceil(1600/2000 x 100) = 80%
-- Classes needed to reach 85% = 7
-
-Skill-only course (S: 24 conducted, 18 attended)
-- conductedWeight = 600, attendedWeight = 450
-- percentage = ceil(450/600 x 100) = 75%
-- Classes needed to reach 85% = 16
-
-Tutorial + Skill (T: 10 conducted 9 attended, S: 20 conducted 15 attended)
-- conductedWeight = 1500, attendedWeight = 1275
-- percentage = ceil(1275/1500 x 100) = 85%
-
-Practical + Skill (P: 12 conducted 10 attended, S: 16 conducted 12 attended)
-- conductedWeight = 1000, attendedWeight = 800
-- percentage = ceil(800/1000 x 100) = 80%
-
-Zero conducted hours across all components
-- Returns isNA: true, no division attempted, no crash
-
----
-
-## KLU Attendance Thresholds
-
-| Zone         | Threshold        | Outcome                              |
-|--------------|------------------|--------------------------------------|
-| Safe         | 85% and above    | Unconditional exam eligibility       |
-| Condonation  | 75% to 84.9%     | Eligible to apply with documentation |
-| Detained     | Below 75%        | DT grade, no condonation             |
-
-For law programs (BBA-LLB, LLB, LLM) under Bar Council of India
-guidelines: safe zone starts at 70%, condonation from 65% to 69.9%,
-detained below 65%.
-
-Thresholds apply per subject individually, not overall. A student
-with 90% aggregate but 74% in one subject is detained in that
-subject regardless of overall attendance.
-
-Full policy reference: https://kluattendancecalc.vercel.app/policy
+| Page | What it is |
+|---|---|
+| [Home / dashboard](https://kluattendancecalc.vercel.app) | Per-subject attendance, status, skip margin and classes needed |
+| [Import from NewERP](https://kluattendancecalc.vercel.app/uploads) | ERP sync or paste your attendance and timetable |
+| [KL Timetable planner](https://kluattendancecalc.vercel.app/timetable) | Weekly timetable, Monday to Saturday |
+| [Bunk planner / forecast](https://kluattendancecalc.vercel.app/forecast) | Forecast attendance to a date and find safe days off |
+| [LTPS calculator and formula](https://kluattendancecalc.vercel.app/ltps) | Weighted attendance explained |
+| [TCBR guide and calculator](https://kluattendancecalc.vercel.app/tcbr) | Total Classes Before Registration |
+| [Recovery guide and calculator](https://kluattendancecalc.vercel.app/recovery) | Classes needed to reach 75% or 85% |
+| [Methodology](https://kluattendancecalc.vercel.app/methodology) | The formulas used |
+| [Attendance guide](https://kluattendancecalc.vercel.app/guide) | 85% rule, 75% condonation floor, safe bunks |
+| [Condonation](https://kluattendancecalc.vercel.app/condonation) | Eligibility and process |
+| [Attendance policy](https://kluattendancecalc.vercel.app/policy) | Rules with links to official KLEF documents |
 
 ---
 
 ## Features
 
-- LTPS weighted attendance calculator with ceiling rounding
-- 85% exam eligibility and 75% detention threshold checker
-- Bunk planner to simulate how many classes you can safely skip
-- Recovery calculator showing classes needed to reach your target
-- Predictive calendar to forecast attendance across future weeks
-- NewERP sync to import attendance automatically from the KLU portal
-- Timetable planner to map your weekly schedule to the forecast
-- Condonation eligibility checker
-- KLU attendance policy reference with official KLEF source citations
-- Works for both Vaddeswaram and Hyderabad campuses
+### Attendance
+- LTPS weighted attendance (Lecture, Tutorial, Practical, Skill) with ceiling rounding
+- Per-subject cards with a component breakdown
+- Shows how many classes you can skip, or how many you need to reach your target
+- Target toggle between 75% and 85%
+- TCBR mode on or off
+- Status labels: Safe (85%+), Condonation (75-84%), Below 75%
+- Add or remove simulated classes to preview the effect before it happens
+- Banner when your synced data is more than 24 hours old
+
+### Bunk planner (forecast)
+- Pick an end date and a target from 76% to 95%
+- Mark days as absent or holiday on a calendar
+- Dots show what would happen if you missed a given day
+- "Find Safe Days Off" suggests combinations of days off, ranked by least impact
+- Projected Impact card compares current and projected percentage per subject
+- Uses your timetable, so projections follow your real class days
+
+### KL Timetable planner
+- Weekly grid, Monday to Saturday
+- Shows course code, component (Lecture, Tutorial, Practical, Skill), room and section
+- Import from NewERP or build from scratch
+- Tap a cell to pick a subject, set the component, edit the room, or clear the slot
+- Color-coded by component
+- Show periods automatically or up to 24
+- Weekly load summary grouped by subject and component
+
+### Calculators (no import needed)
+- LTPS weighted calculator
+- TCBR calculator: result with and without TCBR
+- Recovery calculator: classes needed to reach 75% or 85%
+
+### Importing your data
+- **ERP sync** with your student ID, password and captcha
+- **Paste** the ERP attendance or timetable page, with a step-by-step tutorial
+- Or enter things yourself
+
+### App
+- Installable as a PWA
+- Dark mode
+- Mobile layout with bottom navigation
+- Clear attendance, timetable, or absences and holidays separately
 
 ---
 
-## Why the Student ERP Shows a Different Number
+## The LTPS formula
 
-The Student ERP displays raw unweighted attendance. If you attended
-16 out of 20 tutorial sessions, the ERP shows 80% for that component
-without applying any weight multiplier.
+KL University attendance is weighted by component:
 
-The Parent ERP applies the full LTPS weighting and shows your actual
-weighted percentage. This calculator replicates that weighted
-calculation, giving you the same result as the Parent ERP without
-requiring parent login credentials.
+| Component | Code | Weight |
+|---|---|---|
+| Lecture | L | 100 |
+| Tutorial | T | 100 |
+| Practical / Lab | P | 50 |
+| Skill | S | 25 |
+
+```
+conductedWeight = (L_conducted x 100) + (T_conducted x 100)
+                + (P_conducted x 50)  + (S_conducted x 25)
+
+attendedWeight  = (L_attended x 100) + (T_attended x 100)
+                + (P_attended x 50)  + (S_attended x 25)
+
+percentage = ceil((attendedWeight / conductedWeight) x 100)
+```
+
+If `conductedWeight` is zero, the subject is shown as N/A and no division is attempted.
+
+### Worked examples
+
+| Case | Result |
+|---|---|
+| Tutorial only: 20 conducted, 16 attended | 80%, 7 more classes to reach 85% |
+| Skill only: 24 conducted, 18 attended | 75%, 16 more classes to reach 85% |
+| T: 10 conducted, 9 attended; S: 20 conducted, 15 attended | 85% |
+| P: 12 conducted, 10 attended; S: 16 conducted, 12 attended | 80% |
+
+### Recovery estimate
+
+```
+classesNeeded = ceil((target x conducted - attended) / (1 - target))
+```
+
+For example, 58 attended out of 70 conducted needs 10 more classes to reach 85%.
+
+Full details: [methodology page](https://kluattendancecalc.vercel.app/methodology).
 
 ---
 
-## Tech Stack
+## Attendance thresholds
 
-- Next.js with App Router
+| Zone | Threshold | Usual outcome |
+|---|---|---|
+| Safe | 85% and above | Eligible for exams |
+| Condonation | 75% to 84% | Discretionary, never automatic; apply with documentation |
+| Below 75% | Under 75% | Usually detained |
+
+Thresholds are applied per subject. Different thresholds apply to some programs, such as law. Confirm with your department office.
+
+Policy reference: [attendance policy](https://kluattendancecalc.vercel.app/policy) · [condonation guide](https://kluattendancecalc.vercel.app/condonation)
+
+---
+
+## FAQ
+
+**How is KL University attendance calculated?**
+By component weights: Lecture and Tutorial at 100, Practical at 50 and Skill at 25. See the formula above.
+
+**What attendance do I need at KL University?**
+85% is the safe level. Between 75% and 84%, condonation may be possible with documentation. Below 75% you are usually detained. Confirm with your department office.
+
+**What is TCBR?**
+Total Classes Before Registration. The parent ERP subtracts these classes in its LTPS calculation. This tool lets you view your result with TCBR on or off. See the [TCBR guide](https://kluattendancecalc.vercel.app/tcbr).
+
+**How many classes do I need to attend to reach 85%?**
+Use the [recovery calculator](https://kluattendancecalc.vercel.app/recovery) or the formula above.
+
+**How many classes can I skip?**
+Use the [bunk planner](https://kluattendancecalc.vercel.app/forecast). It forecasts to a date you choose and can suggest safe days off.
+
+**Is this official?**
+No. It is an independent student project. Your parent ERP is the official figure.
+
+**Where is my data stored?**
+Attendance and timetable data are saved in your browser (localStorage). For ERP sync, the app's server fetches your data from NewERP and returns it to your browser. It does not save your password or attendance records in a database. The site uses Google Analytics.
+
+---
+
+## Tech stack
+
+- Next.js (App Router)
 - React
 - Tailwind CSS
-- Vercel edge deployment
-- Zero database, all attendance data stays in your browser locally
-- No ERP password stored or transmitted to any server
+- Serwist (PWA)
+- Deployed on Vercel
+- No database; saved data lives in your browser
 
 ---
 
-## Official Sources
+## Official sources
 
-KL University attendance policy:
-https://www.kluniversity.in/site/attendance.htm
-
-KLEF B.Com Academic Handbook 2024:
-https://www.kluniversity.in/mba/pdf/B.Com-Handbook-2024.pdf
-
-KLEF M.Sc Academic Handbook 2023-24:
-https://www.kluniversity.in/site/pdfs/hand-books/2023-24/M.Sc-Computational-Mathematics.pdf
+- KL University attendance page: https://www.kluniversity.in/site/attendance.htm
+- Attendance Policy and Evaluation Process (PDF): https://www.kluniversity.in/site/pdfs/Attendance-Policy-and-Evaluation-Process.pdf
 
 ---
 
 ## Disclaimer
 
-Independent student project. Not affiliated with, endorsed by,
-or officially connected to Koneru Lakshmaiah Education Foundation
-or KL University. Always verify your final eligibility status
-against the official NewERP portal before exam registration.
+Independent student project. Not affiliated with, endorsed by, or officially connected to Koneru Lakshmaiah Education Foundation or KL University. All figures are estimates for planning. Always check your final eligibility against the official NewERP portal and your department office before exam registration.
